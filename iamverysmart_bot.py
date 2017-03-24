@@ -3,19 +3,13 @@ import time
 import PyDictionary
 
 excluded_words = ["I", "that", "the", "they", ""]
-# Append to cache if performed action (write to .txt file?)
+# Append to cache if already processed (write to .txt file?)
 cache = []
-
-# Get password
-print("Getting password...")
-password_file = open("bot_password.txt")
-password = password_file.read()
-print("Password successfully read.")
 
 # Login
 print("Attempting to login...")
 r = praw.Reddit(user_agent = "I-am-very-smart bot 1.0 /u/iamverysmart_bot")
-r.login("iamverysmart_bot", password)
+r.login()
 print("Successfully logged in.")
 
 # Given a word, returns the longest synonym
