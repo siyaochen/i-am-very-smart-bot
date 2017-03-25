@@ -30,6 +30,27 @@ def longest_synonym(word):
 
 # Replaces a word within a comment with another word
 def replace(comment, old_word, new_word):
+	if not new_word == old_word:
+		# Check for capitalization in word
+		if old_word[0].isupper():
+			new_word = new_word.title()
+
+		# Check for punctuation at the end of the word
+		if old_word[len(old_word) - 1] == ".":
+			new_word += "."
+		elif old_word[len(old_word) - 1] == ",":
+			new_word += ","
+		elif old_word[len(old_word) - 1] == "!":
+			new_word += "!"
+		elif old_word[len(old_word) - 1] == "?":
+			new_word += "?"
+		elif old_word[len(old_word) - 1] == ":":
+			new_word += ":"
+		elif old_word[len(old_word) - 1] == ";":
+			new_word += ";"
+		elif old_word[len(old_word) - 1] == "...":
+			new_word += "..."
+
 	# Replace word in a list
 	words = comment.split()
 	for n in range(len(words)):
@@ -61,10 +82,13 @@ def run():
 	for word in new_text.split():
 		new_word = ""
 		# If the word matches all the criteria
-		if not word[0].isupper() and not word in excluded_words and not word in word_cache and len(word) >= 5:
+		if not word in excluded_words and not word in word_cache and len(word) >= 5:
 			print("Here is the old word: " + word)
 			# Find longest synonym
 			new_word = longest_synonym(word)
+			if len(new_word) <= len(word):
+				new_word = word
+
 			print("Here is the new word: " + new_word)
 			# Replace all instances of word with synonym
 			new_text = replace(new_text, word, new_word)	
