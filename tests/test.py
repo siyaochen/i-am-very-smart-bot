@@ -48,9 +48,11 @@ def replace(comment, old_word, new_word):
 # Run the bot
 def run():
 	print("Reading comment...\n")
+
 	# Read comment from file
 	comment_file = open("sample_comments/sample_comment_1.txt")
-	new_text = comment_file.read()
+	text = comment_file.read()
+	new_text = text
 
 	print("Here is the old comment:")
 	print(new_text + "\n")
@@ -71,6 +73,15 @@ def run():
 	# Post comment
 	print("Here is the processed comment:")
 	print(new_text)
+
+	# Write to file
+	write_comment_file = open("sample_comments/sample_output_comment_1.txt", "w+")
+	write_comment_file.write("Previous Comment:\n")
+	write_comment_file.write(text)
+	write_comment_file.write("\n\nProcessed Comment:\n")
+	write_comment_file.write(new_text)
+	write_comment_file.close
+
 	# Add comment to cache
 	cache.append("comment here")
 
