@@ -32,8 +32,21 @@ def longest_synonym(word):
 	return longest
 
 # Replaces a word within a comment with another word
-def replace(comment, word):
-	#Stuff here
+def replace(comment, old_word, new_word):
+	# Replace word in a list
+	words = comment.split()
+	for n in range(len(words)):
+		if words[n] is old_word:
+			words[n] = new_word
+	
+	# Need to fix line break issue
+	# Reconstructs the text with a space between each element
+	new_comment = ""
+	for n in range(len(words)):
+		new_comment += words[n]
+		new_comment += " "
+
+	return new_comment
 
 # Run the bot
 def run():
@@ -44,15 +57,14 @@ def run():
 	for comment in comments:
 		# Check to see if comment length matches
 		if len(comment) > 30 and len(comment) < 200:
-			new_comment = comment
-			text = comment.body
-			for word in text:
+			new_text = comment.body
+			for word in new_text.split():
 				new_word = ""
 				# If the word matches all the criteria
 				if not word[0].isupper() and not word in excluded_words and len(word) >= 5:
 					new_word = longest_synonym(word)
-					# Replace word with synonym
-					new_commment = replace(new_comment, new_word)
+					# Replace all instances of word with synonym
+					new_text = replace(new_text, old_word, new_word)
 
 # Main loop
 while True:
