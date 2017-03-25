@@ -1,6 +1,6 @@
 import praw
 import time
-import PyDictionary
+from PyDictionary import PyDictionary
 
 # Words that aren't replaced
 excluded_words = ["your", "I", "they", "their", "we", "who", "them", "its", "our", "my", "those", "he", "us", "her", "something", "me", "yourself", "someone", "everything", "itself", "everyone", "themselves", "anyone", "him", "whose", "myself", "everybody", "ourselves", "himself", "somebody", "yours", "herself", "whoever", "you", "that", "it", "this", "what", "which", "these", "his", "she", "lot", "anything", "whatever", "nobody", "none", "mine", "anybody", "some", "there", "all", "where", "another", "same", "certain", "nothing", "self", "nowhere"]
@@ -24,10 +24,10 @@ def longest_synonym(word):
 	max_length = 0
 	# If synonyms are available
 	if synonyms is not None:
-		for word in synonyms:
-			if len(word) > max_length:
-				max_length = len(word)
-				longest = word
+		for new_word in synonyms:
+			if len(new_word) > max_length:
+				max_length = len(new_word)
+				longest = new_word
 	
 	return longest
 
@@ -36,7 +36,7 @@ def replace(comment, old_word, new_word):
 	# Replace word in a list
 	words = comment.split()
 	for n in range(len(words)):
-		if words[n] is old_word:
+		if words[n] == old_word:
 			words[n] = new_word
 	
 	# Need to fix line break issue
@@ -70,7 +70,7 @@ def run():
 					# Find longest synonym
 					new_word = longest_synonym(word)
 					# Replace all instances of word with synonym
-					new_text = replace(new_text, old_word, new_word)
+					new_text = replace(new_text, word, new_word)
 					# Add word to word_cache
 					word_cache.append(new_word)
 			# Post comment
