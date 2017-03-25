@@ -13,7 +13,7 @@ word_cache = []
 print("Attempting to login...")
 r = praw.Reddit(user_agent = "I-am-very-smart bot 1.0 /u/iamverysmart_bot")
 r.login()
-print("Successfully logged in.")
+print("Login successful.")
 
 # Given a word, returns the longest synonym
 def longest_synonym(word):
@@ -50,25 +50,40 @@ def replace(comment, old_word, new_word):
 
 # Run the bot
 def run():
+	print("Attempting to contact subreddit...")
 	subreddit = r.get_subreddit("test")
+	print("Getting comments...")
 	comments = subreddit.get_comments(limit = 10)
 
 	# Loop through comments, reply to some
 	for comment in comments:
 		# Check to see if comment length matches
-		if len(comment) > 30 and len(comment) < 200:
+		if len(comment) > 30 and len(comment) < 200 and not comment in cache:
+			print("Suitable comment found. Processing comment...")
 			new_text = comment.body
+			print("Here is the old comment:")
+			print(comment.body)
 			for word in new_text.split():
 				new_word = ""
 				# If the word matches all the criteria
-				if not word[0].isupper() and not word in excluded_words and len(word) >= 5:
+				if not word[0].isupper() and not word in excluded_words and not word in word_cache and len(word) >= 5:
+					# Find longest synonym
 					new_word = longest_synonym(word)
 					# Replace all instances of word with synonym
 					new_text = replace(new_text, old_word, new_word)
+					# Add word to word_cache
+					word_cache.append(new_word)
+			# Post comment
+			print("Here is the processed comment:")
+			print(new_text)
+			# Add comment to cache
+			cache.append("comment here")
 
 # Main loop
 while True:
+	print("Running program...")
 	run()
 	# Sleep for 10 seconds
+	print("Sleeping for 10 seconds...")
 	time.sleep(10)
 
