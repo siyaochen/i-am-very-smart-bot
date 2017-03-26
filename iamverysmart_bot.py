@@ -72,7 +72,7 @@ def replace(comment, old_word, new_word):
 def run():
 	# Get subreddit
 	print("Attempting to contact subreddit...")
-	subreddit = reddit.subreddit("all")
+	subreddit = reddit.subreddit("askreddit")
 	print("Getting comments...")
 
 	# Get submissions in subreddit
@@ -81,7 +81,7 @@ def run():
 		# Loop through comments, reply to some
 		for comment in comments:
 			# Check to see if comment length matches
-			if len(comment.body) > 20 and len(comment.body) < 200 and comment not in cache:
+			if len(comment.body) > 30 and len(comment.body) < 200 and comment not in cache:
 				print("Suitable comment found. Processing comment...")
 				new_text = comment.body
 				print("Here is the old comment:")
@@ -103,7 +103,7 @@ def run():
 				print("Here is the processed comment:")
 				print(new_text)
 				print("Attempting to comment...")
-				comment.reply("I am a bot, bleep, bloop. Here is how an intellectually superior person would say your comment: " + new_text)
+				comment.reply('''I am a bot, *bleep*, *bloop*. Here is how an intellectually superior person would say your comment: *****''' + new_text + '''*****This bot works by replacing words in a sentence with their longest synonym.''')
 				# Add comment to cache
 				cache.append(comment)
 
