@@ -9,6 +9,7 @@ cache = []
 word_cache = []
 
 # Login
+print("hi")
 print("\nThis is the test client.")
 print("I-am-very-smart bot 1.0 /u/iamverysmart_bot\n")
 
