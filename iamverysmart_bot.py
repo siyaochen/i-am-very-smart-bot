@@ -4,8 +4,7 @@ from PyDictionary import PyDictionary
 
 # Words that aren't replaced
 excluded_words = ["your", "I", "they", "their", "we", "who", "them", "its", "our", "my", "those", "he", "us", "her", "something", "me", "yourself", "someone", "everything", "itself", "everyone", "themselves", "anyone", "him", "whose", "myself", "everybody", "ourselves", "himself", "somebody", "yours", "herself", "whoever", "you", "that", "it", "this", "what", "which", "these", "his", "she", "lot", "anything", "whatever", "nobody", "none", "mine", "anybody", "some", "there", "all", "where", "another", "same", "certain", "nothing", "self", "nowhere"]
-# Append comment to cache if already processed (write to .txt file?)
-cache = []
+
 # Append word to word_cache if already replaced
 word_cache = []
 
@@ -52,7 +51,11 @@ def replace(comment, old_word, new_word):
 			new_word += ";"
 		elif old_word[len(old_word) - 1] == "...":
 			new_word += "..."
-
+		elif old_word[0] == "\"":
+			new_word = "\"" + new_word
+		elif old_word[len(old_word) - 1] == "\"":
+			new_word += "\""
+			
 	# Replace word in a list
 	words = comment.split()
 	for n in range(len(words)):
@@ -70,42 +73,51 @@ def replace(comment, old_word, new_word):
 
 # Run the bot
 def run():
+	# Open file cache
+	cache_file = open("cache.txt")
+	cache = cache_file.read().split()
+
 	# Get subreddit
 	print("Attempting to contact subreddit...")
-	subreddit = reddit.subreddit("all")
+	subreddit = reddit.subreddit("iamverysmart")
 	print("Getting comments...")
 
-	# Get submissions in subreddit
-	for submission in subreddit.hot(limit = 10):
-		comments = submission.comments
-		# Loop through comments, reply to some
-		for comment in comments:
-			# Check to see if comment length matches
-			if len(comment.body) > 30 and len(comment.body) < 200 and comment not in cache:
-				print("Suitable comment found. Processing comment...")
-				new_text = comment.body
-				print("Here is the old comment:")
-				print(comment.body)
-				for word in new_text.split():
-					new_word = ""
-					# If the word matches all the criteria
-					if word not in excluded_words and word not in word_cache and len(word) >= 5:
-						# Find longest synonym
-						new_word = longest_synonym(word)
-						if len(new_word) <= len(word):
-							new_word = word
+	# Get submission
+	submission = next(x for x in subreddit.hot(limit = 10) if not x.stickied)
 
-						# Replace all instances of word with synonym
-						new_text = replace(new_text, word, new_word)
-						# Add word to word_cache
-						word_cache.append(new_word)
-				# Post comment
+	comments = submission.comments
+	# Loop through comments, reply to some
+	for comment in comments:
+		# Check to see if comment length matches
+		if len(comment.body) > 30 and len(comment.body) < 400 and comment not in cache:
+			# Add comment to cache
+			cache.append(comment)
+			changed = False
+			print("Suitable comment found. Processing comment...")
+			new_text = comment.body
+			print("Here is the old comment:")
+			print(comment.body)
+			for word in new_text.split():
+				new_word = ""
+				# If the word matches all the criteria
+				if word not in excluded_words and word not in word_cache and len(word) >= 5:
+					# Find longest synonym
+					new_word = longest_synonym(word)
+					if len(new_word) <= len(word):
+						new_word = word
+					changed = True
+
+					# Replace all instances of word with synonym
+					new_text = replace(new_text, word, new_word)
+					# Add word to word_cache
+					word_cache.append(new_word)
+			# Post comment
+			if changed:
 				print("Here is the processed comment:")
 				print(new_text)
 				print("Attempting to comment...")
-				comment.reply('''I am a bot, *bleep*, *bloop*. I have attempted to calculate how an intellectually superior person would say your comment, like in /r/iamverysmart:  \n  ***  \n''' + new_text)
-				# Add comment to cache
-				cache.append(comment)
+				comment.reply('''I am a bot, *bleep*, *bloop*. I have attempted to calculate how someone from /r/iamverysmart would say your comment:  \n  ***  \n''' + new_text)
+
 
 # Main loop
 while True:
